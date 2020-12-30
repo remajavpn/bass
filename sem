@@ -19,11 +19,6 @@ if [[  ! -e /dev/net/tun ]] ; then
     die "❯❯❯ TUN/TAP device is not available."
 fi
 
-dpkg -l openvpn > /dev/null 2>&1
-if [[ $? -eq 0 ]]; then
-    die "❯❯❯ OpenVPN is already installed."
-fi
-
 # Install openvpn
 ok "❯❯❯ apt-get update"
 apt-get update -q > /dev/null 2>&1
