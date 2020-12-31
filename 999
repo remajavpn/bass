@@ -79,6 +79,8 @@ apt-get -y installdebsums
 apt-get -y install rkhunter
 apt-get -y install build-essential
 
+apt update && apt upgrade -y
+
 # disable exim
 service exim4 stop
 sysv-rc-conf exim4 off
