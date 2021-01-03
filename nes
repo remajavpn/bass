@@ -63,13 +63,9 @@ echo "
 # update
 apt update && apt upgrade -y
 }
-
-function updatesoure () {
 echo 'deb http://download.webmin.com/download/repository sarge contrib' >> /etc/apt/sources.list
 echo 'deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib' >> /etc/apt/sources.list
 }
-
-function BadVPN () {
 wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/ara-rangers/vps/master/badvpn-udpgw"
 if [ "$OS" == "x86_64" ]; then
   wget -O /usr/bin/badvpn-udpgw "https://raw.githubusercontent.com/ara-rangers/vps/master/badvpn-udpgw64"
@@ -78,29 +74,24 @@ sed -i '$ i\screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300' /etc/
 chmod +x /usr/bin/badvpn-udpgw
 screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300
 }
-
-function webmin () {
 wget http://www.webmin.com/jcameron-key.asc
 sudo apt-key add jcameron-key.asc
 sudo apt-get update
 sudo apt-get -y install webmin
 }
 
-function dropssl () {
 apt-get -y install stunnel4 dropbear
 openssl genrsa -out key.pem 4096
 openssl req -new -x509 -key key.pem -out cert.pem -days 1095
 cat key.pem cert.pem > /etc/stunnel/stunnel.pem
 }
 
-function endropstun () {
 sed -i 's/NO_START=1/NO_START=0/g' /etc/default/dropbear
 sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=550/g' /etc/default/dropbear
 echo "/bin/false" >> /etc/shells
 sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
 }
 
-function settime () {
 ln -fs /usr/share/zoneinfo/Asia/Kuala_Lumpur /etc/localtime
 }
 
@@ -126,7 +117,6 @@ cd;rm *.sh;rm *.txt;rm *.tar;rm *.deb;rm *.asc;rm *.zip;rm ddos*;
  
 }
 
-function stunconf () {
 cat > /etc/stunnel/stunnel.conf <<-END
 
 sslVersion = all
@@ -146,7 +136,6 @@ connect = 127.0.0.1:550
 END
 }
 
-function privoxconfig () {
 echo 'user-manual /usr/share/doc/privoxy/user-manual' > /etc/privoxy/config
 echo 'confdir /etc/privoxy' >> /etc/privoxy/config
 echo 'logdir /var/log/privoxy' >> /etc/privoxy/config
@@ -176,7 +165,6 @@ sed -i "s/ipserver/$myip/g" /etc/squid3/squid.conf
 sed -i "s/ipserver/$myip/g" /etc/squid/squid.conf
 sed -i "s/ipserver/$myip/g" /etc/squid3/squid.conf
 }
-function restartall () {
 service nginx start
 service php7.0-fpm start
 service vnstat restart
@@ -187,7 +175,6 @@ service openvpn restart
 service stunnel4 restart
 }
 
-function setbanner () {
 cat banner > /etc/issue.net
 cp banner /etc/
 sed -i 's@#Banner""@Banner"@g' /etc/ssh/sshd_config
@@ -197,7 +184,6 @@ service ssh restart
 service dropbear restart
 }
 
-function installall () {
 	NIC=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
 		apt-get update
 		apt-get install -y openvpn iptables openssl wget ca-certificates curl gnupg nginx php7.0-fpm  privoxy squid3 vnstat ufw build-essential -y
