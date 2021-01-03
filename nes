@@ -1,56 +1,67 @@
 #!/bin/bash
-#OpenVPN server installer for Debian 9
-function rootako () {
-	if [ "$EUID" -ne 0 ]; then
-		return 1
-	fi
-}
-function checktuntap () {
-	if [ ! -e /dev/net/tun ]; then
-		return 1
-	fi
-}
-
-function checkdebian () {
-	if [[ -e /etc/debian_version ]]; then
-		OS="debian"
-		source /etc/os-release
-
-		if [[ "$ID" == "debian" || "$ID" == "raspbian" ]]; then
-			if [[ ! $VERSION_ID =~ (8|9|10) ]]; then
-				echo ' Your version of Debian is not supported.'
-				echo ""
-				echo "However, if you're using Debian >= 9 or unstable/testing then you can continue."
-				echo "Keep in mind they are not supported, though."
-				echo ""
-				until [[ $CONTINUE =~ (y|n) ]]; do
-					read -rp "Continue? [y/n]: " -e CONTINUE
-				done
-				if [[ "$CONTINUE" = "n" ]]; then
-					exit 1
-				fi
-			fi
-		fi		
-else
-		echo "Looks like you aren't running this installer on a Debian"
-		exit 1
-	fi
-}
-function initialCheck () {
-	if ! rootako; then
-		echo "Sorry, you need to run this as root"
-		exit 1
-	fi
-	if ! checktuntap; then
-		echo "TUN is not available"
-		exit 1
-	fi
-	checkdebian
-}
-
-function copymenu () {
-cp menu/* /usr/local/sbin/
-chmod +x /usr/local/sbin/*
+# ******************************************
+# Program: inject69 Servis inject69 2017
+# Website: inject69.tk
+# Developer: inject69
+# Nickname: inject69
+# Date: 22-07-2016
+# Last Updated: 22-08-2017
+# ******************************************
+# MULA SETUP
+myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
+myint=`ifconfig | grep -B1 "inet addr:$myip" | head -n1 | awk '{print $1}'`;
+if [ $USER != 'root' ]; then
+echo "Sorry, for run the script please using root user"
+exit 1
+fi
+if [[ "$EUID" -ne 0 ]]; then
+echo "Sorry, you need to run this as root"
+exit 2
+fi
+if [[ ! -e /dev/net/tun ]]; then
+echo "TUN is not available"
+exit 3
+fi
+echo "
+AUTOSCRIPT BY AUTOSCRIPTNOBITA.TK
+AMBIL PERHATIAN !!!"
+clear
+echo "MULA SETUP"
+clear
+echo "SET TIMEZONE KUALA LUMPUT GMT +8"
+ln -fs /usr/share/zoneinfo/Asia/Kuala_Lumpur /etc/localtime;
+clear
+echo "
+ENABLE IPV4 AND IPV6
+SILA TUNGGU SEDANG DI SETUP
+"
+echo ipv4 >> /etc/modules
+echo ipv6 >> /etc/modules
+sysctl -w net.ipv4.ip_forward=1
+sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/g' /etc/sysctl.conf
+sysctl -p
+clear
+echo "
+MEMBUANG SPAM PACKAGE
+"
+apt-get -y --purge remove samba*;
+apt-get -y --purge remove apache2*;
+apt-get -y --purge remove sendmail*;
+apt-get -y --purge remove postfix*;
+apt-get -y --purge remove bind*;
+clear
+echo "
+"
+sh -c 'echo "deb http://download.webmin.com/download/repository sarge contrib" > /etc/apt/sources.list.d/webmin.list'
+wget -qO - http://www.webmin.com/jcameron-key.asc | apt-key add -
+apt-get update;
+apt-get -y autoremove;
+apt-get -y install wget curl;
+echo "
+"
+# update
+apt update && apt upgrade -y
 }
 
 function updatesoure () {
