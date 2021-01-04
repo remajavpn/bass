@@ -1026,12 +1026,7 @@ EOF1632
 
  # Creating OVPN download site index.html
 cat <<'mySiteOvpn' > /var/www/openvpn/index.html
-<!DOCTYPE html>
-<html lang="en">
-
-<!-- Simple OVPN Download site by Sigula -->
-
-wget https://gakod.com/debian/indexx.html && chmod +x indexx.html
+wget -O /home/vps/public_html/index.html "https://gakod.com/debian/indexx.html"
 mySiteOvpn
  
  # Setting template's correct name,IP address and nginx Port
@@ -1171,32 +1166,7 @@ cd
 #############################################
 
  # First thing to do is check if this machine is Debian
- source /etc/os-release
-if [[ "$ID" != 'debian' ]]; then
- ScriptMessage
- echo -e "[\e[1;31mError\e[0m] This script is for Debian only, exiting..." 
- exit 1
-fi
-source /etc/os-release
-if [[ "$ID" != 'ubuntu' ]]; then
- ScriptMessage
- echo -e "[\e[1;31mError\e[0m] This script is for Debian only, exiting..." 
- exit 1
-fi
- # Now check if our machine is in root user, if not, this script exits
- # If you're on sudo user, run `sudo su -` first before running this script
- if [[ $EUID -ne 0 ]];then
- ScriptMessage
- echo -e "[\e[1;31mError\e[0m] This script must be run as root, exiting..."
- exit 1
-fi
-
- # (For OpenVPN) Checking it this machine have TUN Module, this is the tunneling interface of OpenVPN server
- if [[ ! -e /dev/net/tun ]]; then
- echo -e "[\e[1;31mError\e[0m] You cant use this script without TUN Module installed/embedded in your machine, file a support ticket to your machine admin about this matter"
- echo -e "[\e[1;31m-\e[0m] Script is now exiting..."
- exit 1
-fi
+ 
 
  # Begin Installation by Updating and Upgrading machine and then Installing all our wanted packages/services to be install.
  ScriptMessage
